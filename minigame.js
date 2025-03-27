@@ -1,6 +1,3 @@
-// finalboss.js
-// Este arquivo contém a classe FinalBoss que estende Phaser.Scene.
-// A classe possui todos os atributos e métodos adaptados a partir do código original.
 
 class FinalBoss extends Phaser.Scene {
   constructor() {
@@ -163,31 +160,31 @@ class FinalBoss extends Phaser.Scene {
     // Cria as animações para cada personagem
     this.anims.create({
       key: "character1_anim",
-      frames: this.anims.generateFrameNumbers("character1", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character1", { start: 0, end: 1 }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character2_anim",
-      frames: this.anims.generateFrameNumbers("character2", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character2", { start: 0, end: 1 }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character3_anim",
-      frames: this.anims.generateFrameNumbers("character3", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character3", { start: 0, end: 1 }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character4_anim",
-      frames: this.anims.generateFrameNumbers("character4", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character4", { start: 0, end: 1 }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character5_anim",
-      frames: this.anims.generateFrameNumbers("character5", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character5", { start: 0, end: 1 }),
       frameRate: 3.5,
       repeat: -1,
     });
