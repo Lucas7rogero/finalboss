@@ -4,13 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinalBoss</title>
+    <!-- Importa o Phaser -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <!-- Seção 1: Importa o arquivo que contém a classe FinalBoss -->
     <script src="minigame.js"></script>
     <style>
       body {
         margin: 0;
         overflow: hidden;
       }
+      /* Canvas de fundo com efeito Matrix */
       #matrixCanvas {
         position: fixed;
         top: 0;
@@ -19,6 +22,7 @@
         height: 100vh;
         z-index: -1;
       }
+      /* Container do jogo */
       #game-container {
         position: absolute;
         top: 0;
@@ -29,14 +33,13 @@
     </style>
   </head>
   <body>
-    <!-- Fundo da Tela Hacker -->
+    <!-- Fundo da Tela Hacker (Efeito Matrix) -->
     <canvas id="matrixCanvas"></canvas>
-
     <!-- Container do Jogo -->
     <div id="game-container"></div>
 
+    <!-- Código para o efeito Matrix -->
     <script>
-      // Tela de Hacker (Matrix)
       const canvas = document.getElementById("matrixCanvas");
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
@@ -65,6 +68,24 @@
       }
 
       setInterval(drawMatrix, 50);
+    </script>
+
+    <!-- Seção 2: Configurações do jogo e instanciando a classe FinalBoss -->
+    <script>
+      // Cria as configurações do jogo, referenciando a classe FinalBoss
+      const config = {
+    type: Phaser.AUTO,
+    width: 1920,
+    height: 1080,
+    parent: "game-container", // Define o container do jogo no HTML
+    transparent: true,
+    scale: {
+    mode: Phaser.Scale.FIT,          // O jogo se ajustará proporcionalmente
+    autoCenter: Phaser.Scale.CENTER_BOTH // O jogo será centralizado horizontalmente e verticalmente
+  },
+  scene: [FinalBoss] // Sua classe de cena
+};
+const game = new Phaser.Game(config);
     </script>
   </body>
 </html>
