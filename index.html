@@ -5,8 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinalBoss</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <script src="minigame.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #matrixCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+      }
+      #game-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
   </head>
   <body>
-    <script src="minigame.js"></script>
+    <!-- Fundo da Tela Hacker -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Container do Jogo -->
+    <div id="game-container"></div>
+
+    <script>
+      // Tela de Hacker (Matrix)
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()".split("");
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(0);
+
+      function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0f0";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      setInterval(drawMatrix, 50);
+    </script>
   </body>
 </html>
