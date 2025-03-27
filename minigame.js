@@ -62,7 +62,10 @@ class FinalBoss extends Phaser.Scene {
             text: "Clicar no link e inserir as informações rapidamente para garantir segurança.",
             correct: false,
           },
-          { text: "Ignorar o e-mail e denunciar como phishing.", correct: true },
+          {
+            text: "Ignorar o e-mail e denunciar como phishing.",
+            correct: true,
+          },
           {
             text: "Responder o e-mail perguntando mais detalhes sobre o problema.",
             correct: false,
@@ -120,6 +123,7 @@ class FinalBoss extends Phaser.Scene {
     this.load.image("gameOverImage", "assets/gameover.png");
     this.load.image("victoryImage", "assets/victory.png");
     this.load.image("restartButtonImage", "assets/recomeçar.png");
+    this.load.image("answerBackground", "assets/alternativa.png");
 
     this.questions.forEach((q, index) => {
       this.load.image(`question${index}`, q.question);
@@ -163,31 +167,46 @@ class FinalBoss extends Phaser.Scene {
     // Cria as animações para cada personagem
     this.anims.create({
       key: "character1_anim",
-      frames: this.anims.generateFrameNumbers("character1", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character1", {
+        start: 0,
+        end: 1,
+      }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character2_anim",
-      frames: this.anims.generateFrameNumbers("character2", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character2", {
+        start: 0,
+        end: 1,
+      }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character3_anim",
-      frames: this.anims.generateFrameNumbers("character3", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character3", {
+        start: 0,
+        end: 1,
+      }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character4_anim",
-      frames: this.anims.generateFrameNumbers("character4", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character4", {
+        start: 0,
+        end: 1,
+      }),
       frameRate: 3.5,
       repeat: -1,
     });
     this.anims.create({
       key: "character5_anim",
-      frames: this.anims.generateFrameNumbers("character5", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("character5", {
+        start: 0,
+        end: 1,
+      }),
       frameRate: 3.5,
       repeat: -1,
     });
@@ -209,18 +228,19 @@ class FinalBoss extends Phaser.Scene {
     this.showQuestion();
   }
 
-  update() {
-    // Atualizações contínuas (se necessário)
-  }
+  update() {}
 
   showQuestion() {
-    // Remove todos os elementos da cena atual
     this.children.removeAll();
 
     const currentQuestion = this.questions[this.currentQuestionIndex];
 
     this.questionImage = this.add
-      .image(this.scale.width / 2, this.scale.height * 0.2, `question${this.currentQuestionIndex}`)
+      .image(
+        this.scale.width / 2,
+        this.scale.height * 0.2,
+        `question${this.currentQuestionIndex}`
+      )
       .setScale(0.2);
 
     if (this.characterSprite) {
@@ -244,15 +264,19 @@ class FinalBoss extends Phaser.Scene {
       const column = index % 2;
       const row = Math.floor(index / 2);
 
-      const container = this.add
-        .rectangle(columnX[column], rowY[row], 200, 50, 0x333333, 1)
+      const background = this.add
+        .image(columnX[column], rowY[row], "answerBackground")
         .setOrigin(0.5)
-        .setStrokeStyle(2, 0xffffff);
+        .setScale(0.3);
+
+      const container = this.add
+        .rectangle(columnX[column], rowY[row], 200, 50, 0x000000, 0)
+        .setOrigin(0.5);
 
       const buttonText = this.add
         .text(columnX[column], rowY[row], answer.text, {
           fontSize: "16px",
-          color: "#ffffff",
+          color: "#000000",
           align: "center",
           wordWrap: { width: 180 },
         })
@@ -266,7 +290,7 @@ class FinalBoss extends Phaser.Scene {
         .setInteractive()
         .on("pointerdown", () => this.selectAnswer(answer));
 
-      this.answerButtons.push({ container, buttonText });
+      this.answerButtons.push({ container, buttonText, background });
     });
   }
 
@@ -283,7 +307,11 @@ class FinalBoss extends Phaser.Scene {
       this.correctSound.play();
       this.score++;
       this.feedbackImage = this.add
-        .image(this.scale.width / 2, this.scale.height / 2, `correct${this.currentQuestionIndex}`)
+        .image(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          `correct${this.currentQuestionIndex}`
+        )
         .setScale(0.15);
 
       const nextButton = this.add
@@ -299,7 +327,11 @@ class FinalBoss extends Phaser.Scene {
     } else {
       this.wrongSound.play();
       this.feedbackImage = this.add
-        .image(this.scale.width / 2, this.scale.height / 2, `wrong${this.currentQuestionIndex}`)
+        .image(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          `wrong${this.currentQuestionIndex}`
+        )
         .setScale(0.15);
 
       if (this.lives > 0) {
@@ -342,13 +374,25 @@ class FinalBoss extends Phaser.Scene {
     }
 
     const endImage = isGameOver
-      ? this.add.image(this.scale.width / 2, this.scale.height / 2, "gameOverImage")
-      : this.add.image(this.scale.width / 2, this.scale.height / 2, "victoryImage");
+      ? this.add.image(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          "gameOverImage"
+        )
+      : this.add.image(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          "victoryImage"
+        );
 
     endImage.setScale(0.5);
 
     const restartButton = this.add
-      .image(this.scale.width / 2, this.scale.height * 0.8, "restartButtonImage")
+      .image(
+        this.scale.width / 2,
+        this.scale.height * 0.8,
+        "restartButtonImage"
+      )
       .setScale(0.2)
       .setInteractive()
       .on("pointerdown", () => {
