@@ -61,12 +61,12 @@ class FinalBoss extends Phaser.Scene {
             correct: false,
           },
           {
-            text: "Denunciar como phishing.",
-            correct: true,
-          },
-          {
             text: "Pedir mais detalhes.",
             correct: false,
+          },
+          {
+            text: "Denunciar como phishing.",
+            correct: true,
           },
           {
             text: "Compartilhar para checar.",
@@ -86,16 +86,16 @@ class FinalBoss extends Phaser.Scene {
             correct: false,
           },
           {
-            text: "Ativar dois fatores.",
-            correct: true,
+            text: "Salvar em arquivo.",
+            correct: false,
           },
           {
             text: "Confiar sem senha.",
             correct: false,
           },
           {
-            text: "Salvar em arquivo.",
-            correct: false,
+            text: "Ativar dois fatores.",
+            correct: true,
           },
         ],
         character: "character5",
@@ -125,6 +125,10 @@ class FinalBoss extends Phaser.Scene {
     this.load.image("victoryImage", "assets/victory.png");
     this.load.image("restartButtonImage", "assets/recomeçar.png");
     this.load.image("answerBackground", "assets/alternativa.png");
+    this.load.image("nextButton", "assets/proxima.png");
+    this.load.image("closeButton", "assets/entendido.png");
+    this.load.image("bt_comSom", "assets/bt_comSom.png");
+    this.load.image("bt_semSom", "assets/bt_semSom.png");
 
     this.questions.forEach((q, index) => {
       this.load.image(`question${index}`, q.question);
@@ -154,17 +158,16 @@ class FinalBoss extends Phaser.Scene {
       frameHeight: 1600,
     });
 
-    this.load.image("nextButton", "assets/proxima.png");
-    this.load.image("closeButton", "assets/entendido.png");
-
     this.load.audio("correctSound", "assets/sons/certo.mp3");
     this.load.audio("wrongSound", "assets/sons/erro.mp3");
     this.load.audio("victorySound", "assets/sons/vitória.mp3");
     this.load.audio("gameOverSound", "assets/sons/gameover.mp3");
     this.load.audio("nextSound", "assets/sons/próxima.mp3");
+    this.load.audio("somDeFundo", "assets/sons/somAmbiente.mp3");
   }
 
   create() {
+    this.estado_btSom = false;
     this.correctSound = this.sound.add("correctSound");
     this.wrongSound = this.sound.add("wrongSound");
     this.victorySound = this.sound.add("victorySound");
@@ -172,6 +175,23 @@ class FinalBoss extends Phaser.Scene {
 
     this.createLivesDisplay(); // Exibe as vidas na tela
     this.showQuestion();
+
+    this.trilha = this.sound.add("somDeFundo", {
+      loop: true,
+      volume: 0.5, // ajusta como quiser
+    });
+    this.trilha.play(); 
+    
+    this.bt_Som = this.add.image(1850, 50, this.estado_btSom ? 'bt_semSom' : 'bt_comSom')
+    .setScale(0.3)
+    .setInteractive()
+    .setDepth(1000); // usa um depth alto pra garantir que fique em cima
+
+    this.bt_Som.on('pointerdown', () => {
+    this.estado_btSom = !this.estado_btSom;
+    this.sound.setMute(this.estado_btSom);
+    this.bt_Som.setTexture(this.estado_btSom ? 'bt_semSom' : 'bt_comSom');
+    });
   }
 
   createLivesDisplay() {
@@ -243,28 +263,35 @@ class FinalBoss extends Phaser.Scene {
       const row = Math.floor(index / 2);
 
       const background = this.add
-        .image(columnX[column], rowY[row], "answerBackground")
-        .setOrigin(0.5)
-        .setScale(0.3)
-        .setDepth(2);
+      .image(0, 0, "answerBackground")
+      .setOrigin(0.5)
+      .setScale(0.3)
+      .setDepth(2);
 
       const buttonText = this.add
-        .text(columnX[column], rowY[row], answer.text, {
-          fontSize: "32px",
-          fontWeight: "bold",
-          fontFamily: "vcr osd mono",
-          color: "#000000",
-          align: "center",
-          wordWrap: { width: 180 },
-        })
-        .setOrigin(0.5)
-        .setDepth(3);
+      .text(0, 0, answer.text, {
+      fontSize: "32px",
+      fontWeight: "bold",
+      fontFamily: "vcr osd mono",
+      color: "#000000",
+      align: "center",
+      wordWrap: { width: 180 },
+  })
+      .setOrigin(0.5)
+      .setDepth(3);
 
-      buttonText
-        .setInteractive()
-        .on("pointerdown", () => this.selectAnswer(answer));
+      const buttonContainer = this.add
+      .container(columnX[column], rowY[row], [background, buttonText])
+      .setDepth(3);
 
-      this.answerButtons.push({ background, buttonText });
+// Define o tamanho da área clicável com base na escala do background
+      buttonContainer.setSize(background.width * background.scaleX, background.height * background.scaleY);
+
+// Ativa a interação
+      buttonContainer.setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => this.selectAnswer(answer));
+
+      this.answerButtons.push(buttonContainer);
     });
   }
 
