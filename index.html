@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinalBoss</title>
-    <!-- Importa o Phaser -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-    <!-- Seção 1: Importa o arquivo que contém a classe FinalBoss -->
     <script src="minigame.js"></script>
     <style>
       body {
@@ -49,8 +47,11 @@
       const fontSize = 16;
       const columns = canvas.width / fontSize;
       const drops = Array(Math.floor(columns)).fill(0);
+      const backgroundImage = new Image();
+      backgroundImage.src = "assets/background.png";
 
       function drawMatrix() {
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#0f0";
@@ -66,26 +67,27 @@
           drops[i]++;
         }
       }
-
-      setInterval(drawMatrix, 50);
+      backgroundImage.onload = () => {
+        setInterval(drawMatrix, 50);
+      };
     </script>
 
-    <!-- Seção 2: Configurações do jogo e instanciando a classe FinalBoss -->
+    <!-- Configuração do jogo Phaser -->
     <script>
       // Cria as configurações do jogo, referenciando a classe FinalBoss
       const config = {
-    type: Phaser.AUTO,
-    width: 1920,
-    height: 1080,
-    parent: "game-container", // Define o container do jogo no HTML
-    transparent: true,
-    scale: {
-    mode: Phaser.Scale.FIT,          // O jogo se ajustará proporcionalmente
-    autoCenter: Phaser.Scale.CENTER_BOTH // O jogo será centralizado horizontalmente e verticalmente
-  },
-  scene: [FinalBoss] // Sua classe de cena
-};
-const game = new Phaser.Game(config);
+        type: Phaser.AUTO,
+        width: 1920,
+        height: 1080,
+        parent: "game-container", // Define o container do jogo no HTML
+        transparent: true,
+        scale: {
+          mode: Phaser.Scale.FIT, // O jogo se ajustará proporcionalmente
+          autoCenter: Phaser.Scale.CENTER_BOTH, // O jogo será centralizado horizontalmente e verticalmente
+        },
+        scene: [FinalBoss], // Sua classe de cena
+      };
+      const game = new Phaser.Game(config);
     </script>
   </body>
 </html>

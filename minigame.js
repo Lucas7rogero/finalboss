@@ -1,11 +1,9 @@
-
 class FinalBoss extends Phaser.Scene {
   constructor() {
     super("FinalBoss");
-    // Atributos do jogo
-    this.questions = [
+    this.questions = [ //mano tobas
       {
-        question: "assets/perguntas/pergunta1.png",
+        question: "assets/perguntas/pergunta1.svg",
         answers: [
           { text: "12345678", correct: false },
           { text: "Brasil123", correct: false },
@@ -15,9 +13,10 @@ class FinalBoss extends Phaser.Scene {
         character: "character1",
         correctImage: "assets/feedback/acertou1.png",
         wrongImage: "assets/feedback/erro1.png",
+        background: "assets/fundos/background.png",
       },
       {
-        question: "assets/perguntas/pergunta2.png",
+        question: "assets/perguntas/pergunta2.svg",
         answers: [
           { text: "Identidade", correct: false },
           { text: "Biometria", correct: false },
@@ -27,93 +26,98 @@ class FinalBoss extends Phaser.Scene {
         character: "character2",
         correctImage: "assets/feedback/acertou2.png",
         wrongImage: "assets/feedback/erro2.png",
+        background: "assets/fundos/background2.png",
       },
       {
-        question: "assets/perguntas/pergunta3.png",
+        question: "assets/perguntas/pergunta3.svg",
         answers: [
           {
-            text: "Seus dados serão protegidos e você pode revogar o consentimento a qualquer momento.",
+            text: "Consentimento revogável garantido.",
             correct: false,
           },
           {
-            text: "Você concorda em compartilhar todos os seus dados, incluindo bancários, sem restrições.",
+            text: "Compartilhar dados livremente.",
             correct: true,
           },
           {
-            text: "Os dados coletados serão usados apenas para personalizar sua experiência.",
+            text: "Personalização com dados.",
             correct: false,
           },
           {
-            text: "Você pode acessar e excluir seus dados a qualquer momento.",
+            text: "Acesso e exclusão garantidos.",
             correct: false,
           },
         ],
         character: "character3",
         correctImage: "assets/feedback/acertou3.png",
         wrongImage: "assets/feedback/erro3.png",
+        background: "assets/fundos/background3.png",
       },
       {
-        question: "assets/perguntas/pergunta4.png",
+        question: "assets/perguntas/pergunta4.svg",
         answers: [
           {
-            text: "Clicar no link e inserir as informações rapidamente para garantir segurança.",
+            text: "Clique e informe.",
             correct: false,
           },
           {
-            text: "Ignorar o e-mail e denunciar como phishing.",
+            text: "Denunciar como phishing.",
             correct: true,
           },
           {
-            text: "Responder o e-mail perguntando mais detalhes sobre o problema.",
+            text: "Pedir mais detalhes.",
             correct: false,
           },
           {
-            text: "Compartilhar o link com um amigo para verificar se é confiável.",
+            text: "Compartilhar para checar.",
             correct: false,
           },
         ],
         character: "character4",
         correctImage: "assets/feedback/acertou4.png",
         wrongImage: "assets/feedback/erro4.png",
+        background: "assets/fundos/background2.png",
       },
       {
-        question: "assets/perguntas/pergunta5.png",
+        question: "assets/perguntas/pergunta5.svg",
         answers: [
           {
-            text: "Usar sempre a mesma senha em todas as contas para facilitar o acesso.",
+            text: "Mesma senha sempre.",
             correct: false,
           },
           {
-            text: "Ativar a autenticação em dois fatores e revisar as permissões de aplicativos conectados.",
+            text: "Ativar dois fatores.",
             correct: true,
           },
           {
-            text: "Não usar senha e confiar que os serviços online são seguros.",
+            text: "Confiar sem senha.",
             correct: false,
           },
           {
-            text: "Salvar todas as senhas em um arquivo de texto no computador para não esquecê-las.",
+            text: "Salvar em arquivo.",
             correct: false,
           },
         ],
         character: "character5",
         correctImage: "assets/feedback/acertou5.png",
         wrongImage: "assets/feedback/erro5.png",
+        background: "assets/fundos/background.png",
       },
     ];
 
     this.currentQuestionIndex = 0;
     this.score = 0;
-    this.lives = 5;
+    this.lives = 5; // Número inicial de vidas
+    this.hearts = []; // Array para armazenar os corações
     this.questionImage = null;
     this.characterSprite = null;
     this.answerButtons = [];
     this.feedbackImage = null;
-    this.hearts = [];
     this.correctSound = null;
     this.wrongSound = null;
     this.victorySound = null;
     this.nextSound = null;
+    this.backgroundImage = null;
   }
 
   preload() {
@@ -126,9 +130,9 @@ class FinalBoss extends Phaser.Scene {
       this.load.image(`question${index}`, q.question);
       this.load.image(`correct${index}`, q.correctImage);
       this.load.image(`wrong${index}`, q.wrongImage);
+      this.load.image(`background${index}`, q.background);
     });
 
-    // Carrega os spritesheets dos personagens
     this.load.spritesheet("character1", "assets/character1.png", {
       frameWidth: 1600,
       frameHeight: 1600,
@@ -152,85 +156,60 @@ class FinalBoss extends Phaser.Scene {
 
     this.load.image("nextButton", "assets/proxima.png");
     this.load.image("closeButton", "assets/entendido.png");
-    this.load.image("heart", "assets/heart.png");
 
     this.load.audio("correctSound", "assets/sons/certo.mp3");
     this.load.audio("wrongSound", "assets/sons/erro.mp3");
     this.load.audio("victorySound", "assets/sons/vitória.mp3");
+    this.load.audio("gameOverSound", "assets/sons/gameover.mp3");
     this.load.audio("nextSound", "assets/sons/próxima.mp3");
   }
 
   create() {
-    // Cria as animações para cada personagem
-    this.anims.create({
-      key: "character1_anim",
-      frames: this.anims.generateFrameNumbers("character1", {
-        start: 0,
-        end: 1,
-      }),
-      frameRate: 3.5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "character2_anim",
-      frames: this.anims.generateFrameNumbers("character2", {
-        start: 0,
-        end: 1,
-      }),
-      frameRate: 3.5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "character3_anim",
-      frames: this.anims.generateFrameNumbers("character3", {
-        start: 0,
-        end: 1,
-      }),
-      frameRate: 3.5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "character4_anim",
-      frames: this.anims.generateFrameNumbers("character4", {
-        start: 0,
-        end: 1,
-      }),
-      frameRate: 3.5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "character5_anim",
-      frames: this.anims.generateFrameNumbers("character5", {
-        start: 0,
-        end: 1,
-      }),
-      frameRate: 3.5,
-      repeat: -1,
-    });
-
-    // Adiciona os corações (vidas)
-    for (let i = 0; i < this.lives; i++) {
-      const heart = this.add
-        .image(this.scale.width - 50 - i * 50, 50, "heart")
-        .setScale(0.05);
-      this.hearts.push(heart);
-    }
-
-    // Adiciona os sons
     this.correctSound = this.sound.add("correctSound");
     this.wrongSound = this.sound.add("wrongSound");
     this.victorySound = this.sound.add("victorySound");
     this.nextSound = this.sound.add("nextSound");
 
+    this.createLivesDisplay(); // Exibe as vidas na tela
     this.showQuestion();
   }
 
-  update() {}
+  createLivesDisplay() {
+    // Remove os corações existentes
+    this.hearts.forEach((heart) => heart.destroy());
+    this.hearts = [];
+
+    // Adiciona os corações como texto
+    for (let i = 0; i < this.lives; i++) {
+      const heart = this.add
+        .text(50 + i * 50, 25, "❤", {
+          fontFamily: "Arial",
+          fontSize: "50px",
+          fill: "#f00", // Cor vermelha para os corações
+        })
+        .setDepth(10); // Garante que os corações fiquem na frente de outros elementos
+      this.hearts.push(heart);
+    }
+  }
 
   showQuestion() {
     this.children.removeAll();
 
+    this.createLivesDisplay(); // Garante que os corações sejam exibidos
+
     const currentQuestion = this.questions[this.currentQuestionIndex];
+
+    if (this.backgroundImage) {
+      this.backgroundImage.destroy();
+    }
+    this.backgroundImage = this.add
+      .image(
+        this.scale.width / 2,
+        this.scale.height / 2,
+        `background${this.currentQuestionIndex}`
+      )
+      .setDisplaySize(this.scale.width, this.scale.height)
+      .setDepth(0);
 
     this.questionImage = this.add
       .image(
@@ -238,7 +217,8 @@ class FinalBoss extends Phaser.Scene {
         this.scale.height * 0.2,
         `question${this.currentQuestionIndex}`
       )
-      .setScale(0.2);
+      .setScale(0.55)
+      .setDepth(2);
 
     if (this.characterSprite) {
       this.characterSprite.destroy();
@@ -250,12 +230,13 @@ class FinalBoss extends Phaser.Scene {
         this.scale.height * 0.7,
         currentQuestion.character
       )
-      .setScale(0.5)
-      .play(`${currentQuestion.character}_anim`);
+      .setScale(1.1)
+      .play(`${currentQuestion.character}_anim`)
+      .setDepth(2);
 
     this.answerButtons = [];
     const columnX = [this.scale.width * 0.35, this.scale.width * 0.65];
-    const rowY = [this.scale.height * 0.5, this.scale.height * 0.6];
+    const rowY = [this.scale.height * 0.5, this.scale.height * 0.65];
 
     currentQuestion.answers.forEach((answer, index) => {
       const column = index % 2;
@@ -264,42 +245,30 @@ class FinalBoss extends Phaser.Scene {
       const background = this.add
         .image(columnX[column], rowY[row], "answerBackground")
         .setOrigin(0.5)
-        .setScale(0.3);
-
-      const container = this.add
-        .rectangle(columnX[column], rowY[row], 200, 50, 0x000000, 0)
-        .setOrigin(0.5);
+        .setScale(0.3)
+        .setDepth(2);
 
       const buttonText = this.add
         .text(columnX[column], rowY[row], answer.text, {
-          fontSize: "16px",
+          fontSize: "32px",
+          fontWeight: "bold",
+          fontFamily: "vcr osd mono",
           color: "#000000",
           align: "center",
           wordWrap: { width: 180 },
         })
-        .setOrigin(0.5);
-
-      container
-        .setInteractive()
-        .on("pointerdown", () => this.selectAnswer(answer));
+        .setOrigin(0.5)
+        .setDepth(3);
 
       buttonText
         .setInteractive()
         .on("pointerdown", () => this.selectAnswer(answer));
 
-      this.answerButtons.push({ container, buttonText, background });
+      this.answerButtons.push({ background, buttonText });
     });
   }
 
   selectAnswer(answer) {
-    const currentQuestion = this.questions[this.currentQuestionIndex];
-
-    // Remove os botões de resposta
-    this.answerButtons.forEach(({ container, buttonText }) => {
-      container.destroy();
-      buttonText.destroy();
-    });
-
     if (answer.correct) {
       this.correctSound.play();
       this.score++;
@@ -309,17 +278,19 @@ class FinalBoss extends Phaser.Scene {
           this.scale.height / 2,
           `correct${this.currentQuestionIndex}`
         )
-        .setScale(0.15);
+        .setScale(0.15)
+        .setDepth(200);
 
       const nextButton = this.add
         .image(this.scale.width * 0.7, this.scale.height * 0.8, "nextButton")
         .setScale(0.2)
         .setInteractive()
+        .setDepth(201)
         .on("pointerdown", () => {
           this.nextSound.play();
           this.feedbackImage.destroy();
           nextButton.destroy();
-          this.nextQuestion();
+          this.addTransition(() => this.nextQuestion());
         });
     } else {
       this.wrongSound.play();
@@ -329,13 +300,11 @@ class FinalBoss extends Phaser.Scene {
           this.scale.height / 2,
           `wrong${this.currentQuestionIndex}`
         )
-        .setScale(0.15);
+        .setScale(0.15)
+        .setDepth(200);
 
-      if (this.lives > 0) {
-        const heart = this.hearts.pop();
-        heart.destroy();
-        this.lives--;
-      }
+      this.lives--; // Reduz uma vida
+      this.createLivesDisplay(); // Atualiza a exibição das vidas
 
       if (this.lives === 0) {
         this.endGame(true);
@@ -346,6 +315,7 @@ class FinalBoss extends Phaser.Scene {
         .image(this.scale.width * 0.68, this.scale.height * 0.76, "closeButton")
         .setScale(0.2)
         .setInteractive()
+        .setDepth(201)
         .on("pointerdown", () => {
           this.feedbackImage.destroy();
           closeButton.destroy();
@@ -366,10 +336,6 @@ class FinalBoss extends Phaser.Scene {
   endGame(isGameOver) {
     this.children.removeAll();
 
-    if (isGameOver) {
-      this.victorySound.play();
-    }
-
     const endImage = isGameOver
       ? this.add.image(
           this.scale.width / 2,
@@ -382,7 +348,12 @@ class FinalBoss extends Phaser.Scene {
           "victoryImage"
         );
 
-    endImage.setScale(0.5);
+    endImage.setScale(isGameOver ? 0.5 : 2.0);
+
+    // Reproduz o som de vitória apenas na tela de vitória
+    if (!isGameOver) {
+      this.victorySound.play();
+    }
 
     const restartButton = this.add
       .image(
@@ -395,10 +366,40 @@ class FinalBoss extends Phaser.Scene {
       .on("pointerdown", () => {
         this.currentQuestionIndex = 0;
         this.score = 0;
-        this.lives = 5;
-        this.hearts.forEach((heart) => heart.destroy());
-        this.hearts = [];
+        this.lives = 5; // Reinicia as vidas
         this.create();
       });
+  }
+
+  addTransition(callback) {
+    const transition = this.add
+      .rectangle(
+        this.scale.width / 2,
+        this.scale.height / 2,
+        this.scale.width,
+        this.scale.height,
+        0x000000
+      )
+      .setAlpha(0)
+      .setDepth(10);
+
+    this.tweens.add({
+      targets: transition,
+      alpha: 1,
+      duration: 500,
+      ease: "Cubic.easeInOut",
+      onComplete: () => {
+        callback();
+        this.tweens.add({
+          targets: transition,
+          alpha: 0,
+          duration: 500,
+          ease: "Cubic.easeInOut",
+          onComplete: () => {
+            transition.destroy();
+          },
+        });
+      },
+    });
   }
 }
