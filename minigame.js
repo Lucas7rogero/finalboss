@@ -1,7 +1,7 @@
 class FinalBoss extends Phaser.Scene {
   constructor() {
     super("FinalBoss");
-    this.questions = [
+    this.questions = [ //mano tobas
       {
         question: "assets/perguntas/pergunta1.svg",
         answers: [

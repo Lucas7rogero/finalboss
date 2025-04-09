@@ -47,20 +47,13 @@
       const fontSize = 16;
       const columns = canvas.width / fontSize;
       const drops = Array(Math.floor(columns)).fill(0);
-
-      // Carrega a imagem de fundo
       const backgroundImage = new Image();
-      backgroundImage.src = "assets/background.png"; // Substitua pelo caminho da sua imagem
+      backgroundImage.src = "assets/background.png";
 
       function drawMatrix() {
-        // Desenha a imagem de fundo
         ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-
-        // Adiciona o efeito de desfoque para os caracteres
         ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Desenha os caracteres do efeito Matrix
         ctx.fillStyle = "#0f0";
         ctx.font = fontSize + "px monospace";
 
@@ -74,8 +67,6 @@
           drops[i]++;
         }
       }
-
-      // Aguarda o carregamento da imagem antes de iniciar o efeito
       backgroundImage.onload = () => {
         setInterval(drawMatrix, 50);
       };
