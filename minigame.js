@@ -1,7 +1,7 @@
 class FinalBoss extends Phaser.Scene {
   constructor() {
     super("FinalBoss");
-    this.questions = [ //mano tobas
+    this.questions = [
       {
         question: "assets/perguntas/pergunta1.svg",
         answers: [
@@ -107,8 +107,8 @@ class FinalBoss extends Phaser.Scene {
 
     this.currentQuestionIndex = 0;
     this.score = 0;
-    this.lives = 5; // Número inicial de vidas
-    this.hearts = []; // Array para armazenar os corações
+    this.lives = 5; 
+    this.hearts = []; 
     this.questionImage = null;
     this.characterSprite = null;
     this.answerButtons = [];
@@ -173,24 +173,72 @@ class FinalBoss extends Phaser.Scene {
     this.victorySound = this.sound.add("victorySound");
     this.nextSound = this.sound.add("nextSound");
 
-    this.createLivesDisplay(); // Exibe as vidas na tela
+
+    this.anims.create({
+      key: "character1_anim",
+      frames: this.anims.generateFrameNumbers("character1", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "character2_anim",
+      frames: this.anims.generateFrameNumbers("character2", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "character3_anim",
+      frames: this.anims.generateFrameNumbers("character3", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "character4_anim",
+      frames: this.anims.generateFrameNumbers("character4", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "character5_anim",
+      frames: this.anims.generateFrameNumbers("character5", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.createLivesDisplay();
     this.showQuestion();
 
     this.trilha = this.sound.add("somDeFundo", {
       loop: true,
-      volume: 0.5, // ajusta como quiser
+      volume: 0.5, 
     });
-    this.trilha.play(); 
-    
-    this.bt_Som = this.add.image(1850, 50, this.estado_btSom ? 'bt_semSom' : 'bt_comSom')
-    .setScale(0.3)
-    .setInteractive()
-    .setDepth(1000); // usa um depth alto pra garantir que fique em cima
+    this.trilha.play();
 
-    this.bt_Som.on('pointerdown', () => {
-    this.estado_btSom = !this.estado_btSom;
-    this.sound.setMute(this.estado_btSom);
-    this.bt_Som.setTexture(this.estado_btSom ? 'bt_semSom' : 'bt_comSom');
+    this.bt_Som = this.add
+      .image(1850, 50, this.estado_btSom ? "bt_semSom" : "bt_comSom")
+      .setScale(0.3)
+      .setInteractive()
+      .setDepth(1000); 
+
+    this.bt_Som.on("pointerdown", () => {
+      this.estado_btSom = !this.estado_btSom;
+      this.sound.setMute(this.estado_btSom);
+      this.bt_Som.setTexture(this.estado_btSom ? "bt_semSom" : "bt_comSom");
     });
   }
 
@@ -205,9 +253,9 @@ class FinalBoss extends Phaser.Scene {
         .text(50 + i * 50, 25, "❤", {
           fontFamily: "Arial",
           fontSize: "50px",
-          fill: "#f00", // Cor vermelha para os corações
+          fill: "#f00",
         })
-        .setDepth(10); // Garante que os corações fiquem na frente de outros elementos
+        .setDepth(10); 
       this.hearts.push(heart);
     }
   }
@@ -215,7 +263,7 @@ class FinalBoss extends Phaser.Scene {
   showQuestion() {
     this.children.removeAll();
 
-    this.createLivesDisplay(); // Garante que os corações sejam exibidos
+    this.createLivesDisplay();
 
     const currentQuestion = this.questions[this.currentQuestionIndex];
 
@@ -263,33 +311,35 @@ class FinalBoss extends Phaser.Scene {
       const row = Math.floor(index / 2);
 
       const background = this.add
-      .image(0, 0, "answerBackground")
-      .setOrigin(0.5)
-      .setScale(0.3)
-      .setDepth(2);
+        .image(0, 0, "answerBackground")
+        .setOrigin(0.5)
+        .setScale(0.3)
+        .setDepth(2);
 
       const buttonText = this.add
-      .text(0, 0, answer.text, {
-      fontSize: "32px",
-      fontWeight: "bold",
-      fontFamily: "vcr osd mono",
-      color: "#000000",
-      align: "center",
-      wordWrap: { width: 180 },
-  })
-      .setOrigin(0.5)
-      .setDepth(3);
+        .text(0, 0, answer.text, {
+          fontSize: "32px",
+          fontWeight: "bold",
+          fontFamily: "vcr osd mono",
+          color: "#000000",
+          align: "center",
+          wordWrap: { width: 180 },
+        })
+        .setOrigin(0.5)
+        .setDepth(3);
 
       const buttonContainer = this.add
-      .container(columnX[column], rowY[row], [background, buttonText])
-      .setDepth(3);
+        .container(columnX[column], rowY[row], [background, buttonText])
+        .setDepth(3);
 
-// Define o tamanho da área clicável com base na escala do background
-      buttonContainer.setSize(background.width * background.scaleX, background.height * background.scaleY);
+      buttonContainer.setSize(
+        background.width * background.scaleX,
+        background.height * background.scaleY
+      );
 
-// Ativa a interação
-      buttonContainer.setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.selectAnswer(answer));
+      buttonContainer
+        .setInteractive({ useHandCursor: true })
+        .on("pointerdown", () => this.selectAnswer(answer));
 
       this.answerButtons.push(buttonContainer);
     });
@@ -330,8 +380,8 @@ class FinalBoss extends Phaser.Scene {
         .setScale(0.15)
         .setDepth(200);
 
-      this.lives--; // Reduz uma vida
-      this.createLivesDisplay(); // Atualiza a exibição das vidas
+      this.lives--; 
+      this.createLivesDisplay(); 
 
       if (this.lives === 0) {
         this.endGame(true);
@@ -375,10 +425,12 @@ class FinalBoss extends Phaser.Scene {
           "victoryImage"
         );
 
-    endImage.setScale(isGameOver ? 0.5 : 2.0);
+    endImage.setScale(isGameOver ? 1.2 : 1.2);
 
-    // Reproduz o som de vitória apenas na tela de vitória
-    if (!isGameOver) {
+
+    if (isGameOver) {
+      this.gameOverSound.play();
+    } else {
       this.victorySound.play();
     }
 
@@ -388,12 +440,13 @@ class FinalBoss extends Phaser.Scene {
         this.scale.height * 0.8,
         "restartButtonImage"
       )
-      .setScale(0.2)
+      .setScale(0.3)
       .setInteractive()
+      .setDepth(11) 
       .on("pointerdown", () => {
         this.currentQuestionIndex = 0;
         this.score = 0;
-        this.lives = 5; // Reinicia as vidas
+        this.lives = 5;
         this.create();
       });
   }
