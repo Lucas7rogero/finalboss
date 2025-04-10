@@ -129,6 +129,8 @@ class FinalBoss extends Phaser.Scene {
     this.load.image("closeButton", "assets/entendido.png");
     this.load.image("bt_comSom", "assets/bt_comSom.png");
     this.load.image("bt_semSom", "assets/bt_semSom.png");
+    this.load.image("Instrucao_Digitando", "assets/Instrucao_FinalBoss.png");
+    this.load.image("next", "src/assets/bt_continuar.png");
 
     this.questions.forEach((q, index) => {
       this.load.image(`question${index}`, q.question);
@@ -167,6 +169,10 @@ class FinalBoss extends Phaser.Scene {
   }
 
   create() {
+
+    this.exibirTelaInstrucao("O Hacker está causando muitos problemas! Ele enganou várias pessoas e usou truques sujos para roubar dados valiosos. Agora, essas vítimas precisam da sua ajuda para recuperar a segurança! Cada vítima contará sua história e você precisará escolher a melhor alternativa para protegê-la. Se responder todas corretamente, você derrota o Hacker de uma vez por todas!");
+  }
+  iniciarJogo() {
     this.estado_btSom = false;
     this.correctSound = this.sound.add("correctSound");
     this.wrongSound = this.sound.add("wrongSound");
@@ -241,7 +247,37 @@ class FinalBoss extends Phaser.Scene {
       this.bt_Som.setTexture(this.estado_btSom ? "bt_semSom" : "bt_comSom");
     });
   }
-
+  
+  exibirTelaInstrucao(mensagem) {
+    // Criar o fundo da tela de feedback
+    this.bg_instrucao = this.add.image(0, 0, "Instrucao_Digitando").setOrigin(0, 0).setDepth(0);
+  
+    // Adicionar o texto de feedback
+    this.texto_instrucao = this.add.text(580, 380, mensagem, {
+        fontSize: "40px",
+        fontFamily: "Jockey One",
+        color: "#B47BF8",
+        wordWrap: { width: 900 },
+    }).setOrigin(0, 0).setDepth(6);
+  
+    // Criar o botão de próximo
+    const botaoProximo = this.add
+        .image(this.game.config.width / 2 - 130, this.game.config.height / 1.12, "next")
+        .setScale(0.4)
+        .setOrigin(0, 0)
+        .setInteractive({ useHandCursor: true }) // Garante que o cursor mude para "mão"
+        .setVisible(true)
+        .setDepth(7);
+  
+    // Adiciona um evento de clique corretamente
+    botaoProximo.on("pointerdown", () => {
+       // console.log("Botão pressionado! Trocando para a cena:", proximaCena); // Depuração
+        this.bg_instrucao.destroy();
+        this.texto_instrucao.destroy();
+        botaoProximo.destroy();
+        this.iniciarJogo();
+    });
+}
   createLivesDisplay() {
     // Remove os corações existentes
     this.hearts.forEach((heart) => heart.destroy());
